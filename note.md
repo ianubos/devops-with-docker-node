@@ -114,6 +114,30 @@ docker network inspect <container_name>
 Plan for the future, we need to manage environmental variables. 
 
 
-### Start just specific service
+### Start just a specific service
 ```
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d <service_name>
+```
+
+### Docker Volumes
+The preferred way to save data over restarts of a container.
+ - easy backup and migration
+it is recommended to name volumes.
+
+
+### redis
+```docker exec -it docker_redis_1 redis-cli```
+```
+KEYS *
+GET "sess:50-jxUBo3yuCt-wJ1S7ypj9sE57b_Nse"
+```
+express-session enabels req.session and user can login with the info when redis used.
+
+### Load balancing by Nginx
+I don't know why but I need to run ```docker container start docker_nginx_1``` by my hand...
+[express behind proxies](https://expressjs.com/en/guide/behind-proxies.html#:~:text=When%20running%20an%20Express%20app,return%20different%20values%20than%20expected.&text=If%20false%20%2C%20the%20app%20is,socket.)
+
+Run 2 instances(containers) of node-app
+```
+docker-compose up -f docker-compose.yml -f docker-compose.dev.yml up -d --scale node-app=2
+```
