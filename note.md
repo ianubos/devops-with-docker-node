@@ -169,5 +169,38 @@ And also add this line at the end of .profile in root directory.
 set -o allexport; source /root/.env; set +o allexport
 ```
 
+### How to install on remote machine current project
+Use git clone! Wow! And docker-compose!
+```
+git pull
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --building
+```
+Here, tips of update by docker-compose up!
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --building --no-deps node_app // just update node_app
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --building --scale node-app=2 // run two instances of node-app
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --building --help node_app // see help
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --force-recreate --no-deps node_app // recreate container
+```
 
+Build image should not be outsourced because of its cpu usage.
+So how?
+
+### Use dockerhub
+ - build image on dev server
+ - push build node image to docker hub
+ - pull node image to production server and docker-compose up
+
+Create dockerhub accoutn and use public repository. It is free.
+But you need to reconsider image name. Dockerhub accept <username>/<repository>.
+```
+docker image tag <image_name> <dockerhub_username>/<repository>
+docker image tag docker_node-app ianubos/node-app // my case
+```
+```
+docker push --help
+docker images
+docker login
+docker push <image_name>
+```
 
