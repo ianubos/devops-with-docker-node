@@ -141,3 +141,33 @@ Run 2 instances(containers) of node-app
 ```
 docker-compose up -f docker-compose.yml -f docker-compose.dev.yml up -d --scale node-app=2
 ```
+
+## production step
+We use digitalocean as a server. It has $100 promotion, and $5 for minimum plan, so we can use it for 20 months free.
+It has ssh password reset from website.
+
+### install docker on ubuntu engine
+[automatic script here](https://get.docker.com/) just two commands!
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+```
+Also do not forget to install docker-compose
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+### Set environmental variable
+Inside the docker-compose.prod.yml, use env variables like this ```MONGO_USER=${MONGO_USER}```.
+It can be set by ```export MONGO_USER="hello"``` like this.
+Check by ```printenv```.
+
+But it quite slow. Please make .env file under root (the location is not recommended lest you push this file to github...)
+And also add this line at the end of .profile in root directory.
+```
+set -o allexport; source /root/.env; set +o allexport
+```
+
+
+
