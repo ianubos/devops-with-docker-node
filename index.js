@@ -62,7 +62,7 @@ app.use(session({
 app.use(express.json())
 
 app.get("/api", (req, res) => {
-    res.send("<h2>hi there!!!</h2>")
+    res.send("<h2>hi there???</h2>")
     console.log("front end log")
 })
 //this app has no frontend and you should add nginx setting when you add frontend.

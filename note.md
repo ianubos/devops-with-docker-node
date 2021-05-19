@@ -204,3 +204,67 @@ docker login
 docker push <image_name>
 ```
 
+### Deploy cycle
+on the local machine
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build node-app // just a specific app
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml push node-app // just a specific app
+```
+on the production env
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps node-app
+```
+
+### watchtower
+Automatically detect changes on dockerhub and restart production server with watchtower.[source](https://containrrr.dev/watchtower/)
+in prod server
+```
+docker run -d --name watchtower -e WATCHTOWER_TRACE=true -e WATCHTOWER_DEBUG=true -e WATCHTOWER_POLL_INTERVAL=50 -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower app_node-app_1
+```
+This time specified app_node-app_1.
+Test by pushing image.
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build node-app // just a specific app
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml push node-app // just a specific app
+```
+Check logs```docker logs watchtower -f```
+Do not forget when restart and check other apps.```docker rm watchtower -f```
+
+
+### Upgrade process
+When compose down, there is a loss of time.
+Use Container Orchestration. 
+Kubernetes is good choice but this time, for the remained time reason, use Docker swarm which is built in container orchestration.
+Very easy, and it clearly shows why we need container orchestration.
+
+### Docker swarm
+docker-compose -> just one server, just run dockerfile
+docker swarm -> spread server, spin up new container across servers
+
+Manager Node, Worker Node idea.
+Worker node run tasks. 
+Manager node can be worker node and it works as manager.
+
+```docker info```shows swarm is inactive.
+```ip add``` checks public and private ips.
+Use public ip and ```docker swarm init --advertise-addr <public_ip>```
+
+swarm is not a container but like a service.
+```docker service --help```
+
+See docker official document. 
+[docker v3](https://docs.docker.com/compose/compose-file/compose-file-v3/)
+[watchtower](https://containrrr.dev/watchtower/)
+Add new flags to docker-compose.prod.yml
+```
+node-app:
+    deploy:
+        replicas: 8
+        restart_policy:
+            condition: any
+        update_config:
+            parallelism: 2
+            delay: 15s
+```
