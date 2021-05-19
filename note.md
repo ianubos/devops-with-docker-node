@@ -268,3 +268,21 @@ node-app:
             parallelism: 2
             delay: 15s
 ```
+
+
+deploy application by docker swarm
+```docker stack --help```
+```docker stack deploy --help```
+```docker stack deploy -c docker-compose.prod.yml --help```
+```docker stack deploy -c docker-compose.yml -c docker-compose.prod.yml myapp```
+
+check commands
+```
+docker node ls
+docker stack ls
+docker stack services myapp
+docker stack ps myapp
+```
+
+
+
