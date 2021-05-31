@@ -145,6 +145,7 @@ docker-compose up -f docker-compose.yml -f docker-compose.dev.yml up -d --scale 
 ## production step
 We use digitalocean as a server. It has $100 promotion, and $5 for minimum plan, so we can use it for 20 months free.
 It has ssh password reset from website.
+```ssh root@<global_ip>```
 
 ### install docker on ubuntu engine
 [automatic script here](https://get.docker.com/) just two commands!
@@ -191,7 +192,7 @@ So how?
  - push build node image to docker hub
  - pull node image to production server and docker-compose up
 
-Create dockerhub accoutn and use public repository. It is free.
+Create dockerhub account and use public repository. It is free.
 But you need to reconsider image name. Dockerhub accept <username>/<repository>.
 ```
 docker image tag <image_name> <dockerhub_username>/<repository>
@@ -216,6 +217,12 @@ on the production env
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull
 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps node-app
 ```
+Add image name to specify the image name, and it is useful to deploy to dockerhub.
+```
+    node-app:
+        image: ianubos/blog-node-app
+```
+
 
 ### watchtower
 Automatically detect changes on dockerhub and restart production server with watchtower.[source](https://containrrr.dev/watchtower/)
@@ -282,7 +289,13 @@ docker node ls
 docker stack ls
 docker stack services myapp
 docker stack ps myapp
+
+docker stack deploy -c docker-compose.yml -c docker-compose.pro.yml myapp
 ```
 
+And you build and pushed to dockerhub, check by ```docker stack ps myapp```. 2 of the containers are shutdowned!
+
+
+### Add Frontend???
 
 

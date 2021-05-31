@@ -24,9 +24,6 @@ const userRouter = require("./routes/userRoutes")
 const app = express()
 
 const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`
-console.log('===========================')
-console.log('mongourl:', mongoURL)
-console.log('===========================')
 
 const connectWithRetry = () => {
     mongoose
@@ -45,7 +42,7 @@ const connectWithRetry = () => {
 
 connectWithRetry()
 
-app.enable("trust proxy")
+app.enable("trust proxy") //this line tells express is behind a proxy.
 app.use(cors({}))
 app.use(session({
     store: new RedisStore({client: redisClient}),
@@ -62,7 +59,7 @@ app.use(session({
 app.use(express.json())
 
 app.get("/api", (req, res) => {
-    res.send("<h2>hi there???</h2>")
+    res.send("<h2>hi there???!!!</h2>")
     console.log("front end log")
 })
 //this app has no frontend and you should add nginx setting when you add frontend.
